@@ -9,6 +9,23 @@ var pub_isauto =false;//自动、手动，自动测试时手动按钮无效
 var pub_iskeydown = false;//是否键盘有按键按下。
 var pub_ispasue = false;//是否暂停
 var gRO= new Array(16); //'电阻信号值,在串口通信中使用String类型,0~14=>0.1~1024,15备用
+var pub_devName_channel ;//仪表型号选中通道
+var pub_devName_channelnum;//仪表型号选中的通道号；
+var pub_baud_channel;//波特率选中通道
+var pub_baud_channelnum;//波特率选中通道号
+var pub_fraType_channel;//帧格式选中通道
+var pub_fraType_channelnum;//帧格式选中通道号
+var pub_fraFor_channel;//帧类型选中通道
+var pub_fraFor_channelnum;//帧类型选中通道号
+//CAN数据
+var pub_canForm;//CAN帧格式：０－数据帧，１－远程帧
+var pub_canType;//CAN帧类型：０－标准帧，１－扩展帧
+var pub_canID;//CAN ID
+var pub_canbaud;//CAN波特率
+var pub_canTiming0;//CAN波特率定时器０
+var pub_canTiming1;//CAN波特率定时器1
+var pub_cantime;//CAN  发送间隔(ms)
+var pub_canData;//CAN　数据
 
 //电阻信号的矫正值，即为每个标准电阻的实际电阻值,0-5代表6路电阻的某路0~2为实际电阻值,15为线电阻值
 var rcg  =  new Array(2);
@@ -22,14 +39,19 @@ var pub_data_explan = ['电阻1','电阻2','电阻5','频率1','CAN信号'];//�
 var pub_power = [1,2,3,4,5];//执行指令的权重。权重越高越先运行。
 //
 $(document).ready(function(){
- 			// alert("欢迎！");
- 			var id_status = document.getElementById('device_info');
- 			pub_ispasue = false;
- 			pub_iskeydown =false;
- 			add_talbe(pub_data_type,pub_data_tab,pub_data_explan);
- 			id_status.innerHTML ="系统初始化完成！"
+	// alert("欢迎！");
+	var id_status = document.getElementById('device_info');
+	pub_ispasue = false;
+	pub_iskeydown =false;
+	add_talbe(pub_data_type,pub_data_tab,pub_data_explan);
+	id_status.innerHTML ="系统初始化完成！"
+	//调用ＣＳＳ
+	fuc_css()
+	get_canPara()
+	
 
- 			});
+
+});
 document.onkeydown = hotkey_down; //当按下键盘onkeydown 事件发生时调用hotkey_down函数  
 document.onkeyup = hotkey_up; //当释放键盘onkeyup 事件发生时调用hotkey_up函数  
 
@@ -44,7 +66,7 @@ function reset_table()
 	var dd = document.getElementById('run_bar').getElementsByTagName("tr");
 	pub_isrun =true;
 
-	for (var i = 0; i <dd.length; i++) 
+	for (var i = 0.; i <dd.length ; i++) 
 	{
 		dd[i].style.background = "white";
 	}
@@ -96,7 +118,7 @@ function change_background(get_value)
 			pub_isrun =true;
 			val_start.innerHTML = "启动（/）";
  			pub_ispasue = false;
-			val_start.style.backgroundColor="#D1D1D1";
+			val_start.style.backgroundColor="#A5DE37";
 			pub_isauto = false;
 			id_status.innerHTML = "测试完成！";
 
@@ -118,7 +140,7 @@ function autorun(id)
 	if(id.innerHTML == "启动（/）")
 	{
 		id.innerHTML = "暂停（/）";
-		id.style.backgroundColor="#1ec5e5";
+		id.style.backgroundColor="#FF3333";
 		id_status.innerHTML = "测试继续！";
 		if (pub_ispasue == false) 
 		{
@@ -135,7 +157,7 @@ function autorun(id)
 	{
  		pub_ispasue = true ;
 		id.innerHTML = "启动（/）";
-		id.style.backgroundColor="#D1D1D1";
+		id.style.backgroundColor="#A5DE37";
 		id_status.innerHTML = "测试暂停！";
 	}
 }
@@ -147,7 +169,7 @@ function stoprun()
 	pub_isrun =false;
 	pub_number=0;
 	document.getElementById('btn_start').innerHTML = "启动（/）";
-	document.getElementById('btn_start').style.backgroundColor="#D1D1D1";
+	document.getElementById('btn_start').style.backgroundColor="#A5DE37";
 	// setTimeout('reset_table()',1000);
 	id_status.innerHTML = "测试停止！";
 }
@@ -239,10 +261,10 @@ function getdata_changebtntext(obj)
 	val_length = dd.length;
 	var val_type ;//数据类型
 	var val_data;//数据值
-	document.getElementById('device_v').innerHTML = dd[obj].innerHTML + obj;
-	document.getElementById('device_type').innerHTML = val_length;
+	// document.getElementById('device_v').innerHTML = dd[obj].innerHTML + obj;
+	// document.getElementById('device_type').innerHTML = val_length;
 	//改变背景色
-	dd[obj].style.background = "green";
+	dd[obj].style.background = "#00CC66";
 	// id_status.innerHTML = dd[obj].innerHTML + obj;
 	// id_status.innerHTML = id_tab.rows[obj].cells[1].innerHTML;
 	//获取当前表格行的数据类型
@@ -297,18 +319,18 @@ function Send_data(send_type,send_data)
 	{
 		outputR(send_type,send_data);//输出电阻
 	}
-	if(send_type=="V01" || send_type =="V02")
-	{
-		function outputV(send_type,send_data){};//输出电压
-	}
-	if(send_type=="F01" || send_type =="F02"|| send_type =="F02"|| send_type =="F02"|| send_type =="F02")
-	{
-		function outputF(send_type,send_data){};//输出频率
-	}
-	if(send_type=="CAN")
-	{
-		function outputCAN(send_type,send_data){};//CAN信号输出
-	}
+	// if(send_type=="V01" || send_type =="V02")
+	// {
+	// 	outputV(send_type,send_data);//输出电压
+	// }
+	// if(send_type=="F01" || send_type =="F02"|| send_type =="F02"|| send_type =="F02"|| send_type =="F02")
+	// {
+	// 	outputF(send_type,send_data);//输出频率
+	// }
+	// if(send_type=="CAN")
+	// {
+	// 	outputCAN(send_type,send_data);//CAN信号输出
+	// }
 
 }
 //接收数据:报警状态值
@@ -340,8 +362,8 @@ function add_talbe(val_type,val_data,val_explan)
 	var id_tab = document.getElementById('run_tab')
 	var id_status = document.getElementById('device_info');
 	// var dd = document.getElementById('run_bar').getElementsByTagName("tr");
-	val_length = id_tab.rows.length;
-	// alert(val_num + val_data);
+	// var val_length = id_tab.rows.length;
+	// alert(val_length);
 	for (var i = 0 ; i < val_type.length ; i++)
 	{
 		// 插入行
@@ -382,14 +404,14 @@ function mOut(obj)
 //按下鼠标
 function mDown(obj)
 {
-	obj.style.backgroundColor="#1ec5e5";
+	// obj.style.backgroundColor="#1ec5e5";
 	// obj.innerHTML="请释放鼠标按钮"
 	// alert("你按了键吧"); 
 }
 //释放鼠标
 function mUp(obj)
 {
-	obj.style.backgroundColor="#D1D1D1";
+	// obj.style.backgroundColor="#D1D1D1";
 	// obj.innerHTML="请按下鼠标按钮"
 	// alert("你释放了键吧"); 
 }
@@ -538,7 +560,7 @@ function rch(val_num,val_data)
 			{
 				gRO[i]=1;
 				// if (i==14) {gRO[i]=0;}
-				val_R = val_data-rcg[val_num][15]
+				val_R = val_data-rcg[val_num][i]
 			}
 			else
 			{
@@ -555,6 +577,7 @@ function outputR(send_type,send_data)
 	var send_num;
 	var strTem = "";
 	var hex_strTem ;
+	// alert(send_type +":" + send_data)
 	switch (send_type)
 	{
 		case "R01":send_num = 0;break;
@@ -567,6 +590,11 @@ function outputR(send_type,send_data)
 		strTem =strTem + gRO[i];
 	}
 	hex_strTem = parseInt(strTem,2).toString(16);
+
+	var socket = io.connect('http://localhost:3000');
+
+	socket.emit('resCh0', 10);
+
 	return {send_type:send_type,send_data:hex_strTem};
 }
 
@@ -581,4 +609,55 @@ function calibrate_R(send_type,send_data)
 	}
 
 
+}
+//调用ＣＳＳ
+function fuc_css()
+{
+ 	$(".para_device_button").addClass("button button-3d button-action button-pill");		
+}
+//得到ＣＡＮ参数设置
+function get_canPara()
+{
+	var obj_device_name = document.getElementById("device_name");
+	pub_devName_channelnum =obj_device_name.selectedIndex; //序号，取当前选中选项的序号
+	pub_devName_channel = obj_device_name.options[pub_devName_channelnum].value;
+
+	var obj_baud = document.getElementById("baud");
+	pub_Vchannelnum = obj_baud.selectedIndex; //序号，取当前选中选项的序号
+	pub_baud_channel　 = obj_baud.options[pub_Vchannelnum].value;
+
+	var obj_fraType = document.getElementById("frame_type");
+	pub_fraType_channelnum =obj_fraType.selectedIndex; //序号，取当前选中选项的序号
+	pub_fraType_channel = obj_fraType.options[pub_fraType_channelnum].value;
+
+	var obj_fraFor = document.getElementById("frame_formate");
+	pub_fraFor_channelnum = obj_fraFor.selectedIndex; //序号，取当前选中选项的序号
+	pub_fraFor_channel = obj_fraFor.options[pub_fraFor_channelnum].value;
+
+
+	$("#device_name").change(function(){
+		var obj_device_name = document.getElementById("device_name");
+		pub_devName_channelnum =obj_device_name.selectedIndex; //序号，取当前选中选项的序号
+		pub_devName_channel = obj_device_name.options[pub_devName_channelnum].value;
+	  	alert("device_name:" +　pub_devName_channel　);
+	});
+	$("#baud").change(function(){
+		var obj_baud = document.getElementById("baud");
+		pub_Vchannelnum = obj_baud.selectedIndex; //序号，取当前选中选项的序号
+		pub_baud_channel　 = obj_baud.options[pub_Vchannelnum].value;
+		alert( "baud:" + pub_baud_channel　);
+	});
+	$("#frame_type").change(function(){
+		var obj_fraType = document.getElementById("frame_type");
+		pub_fraType_channelnum =obj_fraType.selectedIndex; //序号，取当前选中选项的序号
+		pub_fraType_channel = obj_fraType.options[pub_fraType_channelnum].value;
+		alert("frame_type:" + pub_fraType_channel);
+	});
+	$("#frame_formate").change(function(){
+		var obj_fraFor = document.getElementById("frame_formate");
+		pub_fraFor_channelnum = obj_fraFor.selectedIndex; //序号，取当前选中选项的序号
+		pub_fraFor_channel = obj_fraFor.options[pub_fraFor_channelnum].value;
+		alert("frame_formate:" + pub_fraFor_channel);
+	});
+	alert("device_name:" +　pub_devName_channel　+ ";baud:" + pub_baud_channel　+ ";frame_type:" + pub_fraType_channel +";frame_formate:" + pub_fraFor_channel);
 }

@@ -1,0 +1,251 @@
+<!--/*
+ * test.html 
+ * Version - 1.0.0
+ * Copyright (c) 2016 Marvin
+ */-->
+<!DOCTYPE html><!--注释：Ｗ３Ｃ规范-->
+<html>
+<head>
+	<!--声明当前页面的编码集CHARSET=GBK,ＧＢＫ(中文编码),UTF-8(国际编码)-->
+	<meta charset="utf-8">>
+	<!--当前页面的三要素-->
+	<title>汽车仪表测试台</title>
+	<meta name="Keywords" content="关键词，关键词">
+	<meta name="description" content="描述">
+
+
+	<!-- js -->
+        <!-- js -->
+	<script type="text/javascript" src="js/jquery-3.0.0.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+ 	<script type="text/javascript" src="js/test-buzhi.js"></script>
+
+	<!-- css， -->
+	<style type="text/css">
+		*{margin: 0;padding: 0;}
+		#form_screen{ width:1330px;height:530px; float: left;margin: 10px;display:block;}
+
+		.screen_div{border:1px solid black;}
+
+		#navgation_bar{width: 1318px;height: 78px;background: #D1D1D1;text-align: right; line-height:20px;}
+		#navgation_bar h2{ text-align:center;float: center;line-height:40px}
+
+		#screen_bar{width: 218px;height: 418px;background: #FFD39B;font-size: 16pt;float: left;color: blue;}
+		#screen_bar ul li{list-style-type: none;}
+		#screen_bar ul li a{width: 218px;color: blue;}
+
+		#para_of_system_bar {background:#BFBFBF;width: 1098px;height: 58px;float: left; text-align: right;line-height: 60px;}
+
+		#run_bar{width: 698px;height: 358px;background: #fff;font-size: 14pt;float: left;overflow-x:scroll;}
+		#run_bar table {/*height: 138px;*/background: #fff;border-collapse: collapse;border: 1px solid black;}
+		#run_bar table  th{ height: 20px; border-collapse: collapse;border: 1px solid black;}
+		#run_bar table td{ height: 10px; border-collapse: collapse;border: 1px solid black;}
+
+		#para_of_device_bar {background: #B5B5B5;width: 398px;height: 188px;float: left;}
+	/*	#para_of_device_bar *{margin: 10px 10px;}*/
+		#para_of_device_bar p {height: 15px; /*margin-top: 5px;*/margin-left: 10px;font-size: 16pt;}
+		.para_device_button {  width: 120px; font-family: strong;font-size: 14pt;/*height: 60px;*//*float: left;border:1px solid black;margin: 20px 20px;text-align: center;line-height:30px;/*background-size:100% 100%;*/}
+
+		/*#canvas_bar{width: 698px;height: 218px;background: #B5B5B5;font-size: 14pt;float: left;overflow:hidden;}
+		#canvas_bar canvas {width: 698px;height: 218px;background: #B5B5B5;border:1px solid black;float: left;position: absolute;}
+*/
+		#alarm_bar {background: #B5B5B5;width: 398px;height: 168px;float: left;}
+		.alarm_div {background:green;width: 60px;height: 40px;float: left;border:1px solid black;margin: 20px 30px;color: white;text-align: center;line-height:40px;}
+		#alarm_one {background: red;}
+		#alarm_five {background: red;}
+		/*#alarm_bar form{border: 1px solid black;}*/
+
+		#taskbar{background: #D1D1D1;width:1318px;height:28px;float: left;line-height:30px;}
+		
+		/*#screen_bar ul li a:hover {background: #d96499;color: #ffffff;font-size: 20pt;}*/
+		/*#screen_bar ul li:nth-child(1){height: 280px;}*/
+		/*#screen_bar ul li:nth-child(1) a{background: #d96499;color: #ffffff;font-size: 20pt;}*/
+		/*#screen_bar ul:hover li{height: 30px;}*/
+		/*#screen_bar ul:hover li a{background: #e7e7e7;color: #blue;font-size: 16pt;}*/
+		/*#screen_bar ul li:hover{height: 280px;}*/
+		#screen_bar ul li a:hover{background: #d96499;color: #ffffff;font-size: 20pt;}
+
+
+
+
+		a:link {
+			text-decoration: none;
+		}
+		div>a{
+			display: inline-block;
+			text-align: center;
+			width: 120px;
+			padding: 8px;
+			background-color: #eee;
+			border: 2px solid black;
+			border-radius : 20px;
+		}
+		/* 定义一个关键帧 */
+		@-webkit-keyframes 'fisheye' {
+			/* 定义动画开始处的关键帧 */
+			0% {
+				-webkit-transform: scale(1);
+				background-color: #eee;
+				border-radius : 10px;
+			}
+			/* 定义动画进行40%时的关键帧 */
+			40% {
+				-webkit-transform: scale(1.5);
+				background-color: #bbb;
+				border-radius : 10px;
+			}
+			/* 定义动画进行100%时的关键帧 */
+			100% {
+				-webkit-transform: scale(1);
+				background-color: #eee;
+				border-radius : 10px;
+			}
+		}
+		div>a:hover {
+			/* 指定执行fkjava动画 */
+			-webkit-animation-name: 'fisheye';
+			/* 指定动画的执行时间 */
+			-webkit-animation-duration: 3s;
+			/* 指定动画的循环无限次 */
+			-webkit-animation-iteration-count: infinite;
+		}
+
+
+	</style>
+	<link rel="stylesheet" type="text/css" href="css/buttons.css"><!-- 按钮样式 -->
+    
+    <!-- 时间和日期显示 -->
+
+	
+
+</head>
+
+<body style="width:1320;height:530px;"  >
+    <div id="form_screen">
+        <!-- 标题栏 -->
+	    <div  class="screen_div" id="navgation_bar" style="color:blue;">
+	    	<h2 >汽车仪表综合测试台</h2>
+	    	<p class= "time">
+	    	</p>
+	    	<p>
+	    		<b>设备型号：QCYB-C4202-A  上海工业自动化仪表研究院研制</b>
+	    	</p>  
+	    </div>
+	    <!--画面列表栏 -->
+	    <div class="screen_div" id="screen_bar">
+	     	<ul>
+	     		<li>
+	     			<a href="test-buzhi.html" >主画面</a>
+	     		</li>
+	     		<li>
+	     			<a href="test-paradevice.html" >参数设置</a>
+	     		</li>     	
+	     		<li>
+	     			<a onclick="about()";>帮助/关于我们</a>
+	     		</li>
+	     		<li>
+	     			<hr>
+	     		</li>
+	     		<li>
+	     			<a href="javascript:window.close();" >退出</a>
+	     			<!-- <a href='javascript:window.open("","_self").close()' >退出</a>  -->
+	     		</li>
+	     	</ul>
+	     	
+	    </div>
+	    <!-- 设备参数栏 -->
+	    <div class="screen_div" id="para_of_system_bar">
+	    	<p style="font-size:14pt;">
+	    	仪表型号：
+	    	<!-- <span id="device_name" style="background:#FFFFFF;width:500px;">XXXX</span> -->
+	    	<select id="device_name" name="device_name" style="margin-bottom:10px;">
+				<option value="XXXX">XXXX</option>
+<!-- 				<option value="19200">19200Kbps</option>
+				<option value="38400">38400Kbps</option> -->
+			</select> 
+	    	波特率：
+	    	<select id="baud" name="baud" style="margin-bottom:10px;">
+				<option value="5K">5Kbps</option><!-- 定时器０：0xBF定时器１：0xFF -->
+				<option value="10K">10Kbps</option><!-- 定时器０：0x31定时器１：0x1C -->
+				<option value="20k">20Kbps</option><!-- 定时器０：0x18定时器１：0x1C -->
+				<option value="40K">40Kbps</option><!-- 定时器０：0x87定时器１：0xFF -->
+				<option value="50K">50Kbps</option><!-- 定时器０：0x09定时器１：0x1C -->
+				<option value="80k">80Kbps</option><!-- 定时器０：0x83定时器１：0xFF -->
+				<option value="100K">100Kbps</option><!-- 定时器０：0x04定时器１：0x1C -->
+				<option value="125K">125Kbps</option><!-- 定时器０：0x03定时器１：0x1C -->
+				<option value="200k">200Kbps</option><!-- 定时器０：0x81定时器１：0xFA -->
+				<option value="250K">250Kbps</option><!-- 定时器０：0x01定时器１：0x1C -->
+				<option value="400K">400Kbps</option><!-- 定时器０：0x80定时器１：0xFA -->
+				<option value="500k">500Kbps</option><!-- 定时器０：0x00定时器１：0x1C -->
+				<option value="666K">666Kbps</option><!-- 定时器０：0x80定时器１：0xB6 -->
+				<option value="800K">800Kbps</option><!-- 定时器０：0x00定时器１：0x16 -->
+				<option value="1000k">1000Kbps</option><!-- 定时器０：0x00定时器１：0x14 -->
+			</select>
+	    	<!-- <span id="baud">19200Kbps</span> -->
+	    	帧类型： 
+	    	<select id="frame_type" name="frame_type" style="margin-bottom:10px;">
+				<option value="标准帧">标准帧</option>
+				<option value="扩展帧">扩展帧</option>
+			</select>
+			<!-- <span id="frame_type"> </span> -->
+			 帧格式：
+			<select id="frame_formate" name="frame_formate" style="margin-bottom:10px;">
+				<option value="数据帧">数据帧</option>
+				<option value="远程帧">远程帧</option>
+			</select>
+			<!-- <span id="frame_formate"></span> -->
+	    	</p>
+	    </div>
+	    <!-- 运行显示栏 -->
+	    <div class="screen_div" id="run_bar">
+		     <table id="run_tab" >
+		     	<tr>
+		     		<th style="width:50px;height: 20px; background:#6666FF;">序号</th>
+		     		<th style="width:60px;height: 20px; background:#6666FF;">类　型</th>
+		     		<th style="width:100px;height: 20px; background:#6666FF;">数　值</th>
+		     		<th style="width:500px;height: 20px; background:#6666FF;">说　　明</th>
+		     	</tr>
+		     </table>
+	    </div>
+	    <!-- 仪表参数栏 -->
+	    <div class="screen_div" id="para_of_device_bar" >
+	    	<h3 style="margin:10px;">测试选项：</h3>
+<!-- 	    	<p>仪表型号：</p> <span id="device_type"></span><br>
+	    	<p>电源电压：</p> <span id="device_v"></span><br> -->
+	    	<button class="para_device_button"; type="button"; id="btn_start"; onclick="autorun(this)"; >启动（/）</button>
+	    	<button class="para_device_button" ; type="button"; id="btn_stop"; onclick="stoprun()"; >停止（*）</button>
+	    	<button class="para_device_button"; type="button"; id="btn_operating"; onclick="operating_step()"; >当前步（5）</button>
+	    	<button class="para_device_button"; type="button"; id="btn_previous"; onclick="previous_step()" >上一步（8）</button>
+	    	<button class="para_device_button"; type="button"; id="btn_next"; onclick="next_step()";>下一步（2）</button>
+	    	<button class="para_device_button"; type="button"; id="btn_test"; onclick="test()"; ><!-- <img src="images/start5.png"  style="width: 30px;height: 40px;" ;> --> 测试（.）</button>
+	    </div>
+	    <!-- 3D仪表 栏 -->
+<!-- 	    <div class="screen_div" id="canvas_bar">
+	    	<p style="z-index:9999">
+	    		模拟仪表：</p>
+	    	<canvas id="mc">
+		    </canvas>	
+	    </div> -->
+	    <!--报警状态栏 -->
+	    <div class="screen_div" id="alarm_bar">
+	    	<form >
+	    		<h3 style="margin:10px;" >报警状态：</h3>
+	    		<div class="alarm_div" id="alarm_one">报警1</div>
+	    		<div class="alarm_div" id="alarm_two">报警2</div>
+	    		<div class="alarm_div" id="alarm_three">报警3</div>
+<!-- 	    		<div class="alarm_div" id="alarm_four">报警4</div>
+	    		<div class="alarm_div" id="alarm_five">报警5</div>
+	    		<div class="alarm_div" id="alarm_six">报警6</div> -->
+	    	</form>
+<!-- 	    	<p id="device_alarm" style="background:red;color:white;">温度超温报警！</p> -->
+	    </div>
+	    <!-- 状态栏 -->
+	    <div class="screen_div" id="taskbar">
+	    	<span id="device_info">通讯正常，设备运行正常！
+	    	</span>
+	    </div>
+    </div>  
+
+
+</body>
+</html>

@@ -35,6 +35,7 @@
       $( "#sliderVoltage1" ).slider({
         min:0,
         max:4000,
+        step:50,
         change:function(event, ui){
           socket.emit('sliderVoltage1', ui.value);
           $("#sliderVoltageTxt1").text("Voltage1:"+ ui.value/100);

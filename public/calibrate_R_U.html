@@ -1,0 +1,115 @@
+<!--/*
+ * test.html 
+ * Version - 1.0.0
+ * Copyright (c) 2016 Marvin
+ */-->
+<!DOCTYPE html><!--注释：Ｗ３Ｃ规范-->
+<html>
+<head>
+	<!--声明当前页面的编码集CHARSET=GBK,ＧＢＫ(中文编码),UTF-8(国际编码)-->
+	<meta charset="utf-8">>
+	<!--当前页面的三要素-->
+	<title>参数校验</title>
+	<meta name="Keywords" content="关键词，关键词">
+	<meta name="description" content="描述">
+
+
+	<!-- js -->
+        <!-- js -->
+	<script type="text/javascript" src="js/jquery-3.0.0.min.js"></script>  
+ 	<script type="text/javascript" src="js/test-buzhi.js"></script>	
+ 	<script type="text/javascript" src="js/calibrate.js"></script>
+
+
+	
+    <style type="text/css">
+    	.form_R {width:180px;height:450px;border: 1px solid black;margin: 10px;padding: 10px; float: left;}
+    	.R_calibrate {width: 60px ;  text-align: center;font-size: 12pt;}
+    	.form_V {width:180px;height:100px;border: 1px solid black;margin: 10px;padding: 10px; float: left;}
+    	.V_calibrate {width: 60px ;  text-align: center;font-size: 12pt;}
+    </style>
+	<link rel="stylesheet" type="text/css" href="css/animate.css">
+
+</head>
+
+<body >
+	<div class="form_R" id="div_R">
+		<form>
+			<b>电阻校准：</b><br>
+			<label style="margin-bottom:10px;">电阻选项：</label>
+			<select id="R_channel" name="R_channel" style="margin-bottom:10px;">
+				<option value="R01">R1</option>
+				<option value="R02">R2</option>
+			</select><br>
+			<button  type="button" class="R_calibrate" id="btnR_0">0</button>
+
+			<input class="R_calibrate"  id="txtR_0" type="text" name="txtR_0">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_01">0.1</button>
+			<input class="R_calibrate"  id="txtR_01" type="text" name="txtR_01">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_02">0.2</button>
+			<input class="R_calibrate"  id="txtR_02" type="text" name="txtR_02">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_04">0.4</button>
+			<input class="R_calibrate"  id="txtR_04" type="text" name="txtR_04">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_08">0.8</button>
+			<input class="R_calibrate"  id="txtR_08" type="text" name="txtR_08">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_1">1</button>
+			<input class="R_calibrate"  id="txtR_1" type="text" name="txtR_1">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_2">2</button>
+			<input class="R_calibrate"  id="txtR_2" type="text" name="txtR_2">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_4">4</button>
+			<input class="R_calibrate"  id="txtR_4" type="text" name="txtR_4">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_8">8</button>
+			<input class="R_calibrate"  id="txtR_8" type="text" name="txtR_8">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_16">16</button>
+			<input class="R_calibrate"  id="txtR_16" type="text" name="txtR_16">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_32">32</button>
+			<input class="R_calibrate"  id="txtR_32" type="text" name="txtR_32">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_64">64</button>
+			<input class="R_calibrate"  id="txtR_64" type="text" name="txtR_64">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_128">128</button>
+			<input class="R_calibrate"  id="txtR_128" type="text" name="txtR_128">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_256">256</button>
+			<input class="R_calibrate"  id="txtR_256" type="text" name="txtR_256">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_512">512</button>
+			<input class="R_calibrate"  id="txtR_512" type="text" name="txtR_512">
+			<br>
+			<button type="button" class="R_calibrate" id="btnR_1024">1024</button>
+			<input class="R_calibrate"  id="txtR_1024" type="text" name="txtR_1024">
+			<br>
+		</form>
+		
+	</div>
+	<div class="form_V" id="div_V">
+		<form>
+			<b>电压校准：</b><br>
+			<label style="margin-bottom:10px;">电压选项：</label>
+			<select id="V_channel" name="V_channel" style="margin-bottom:10px;">
+				<option value="V1">V1</option>
+				<option value="V2">V2</option>
+			</select><br>
+			<button type="button" class="V_calibrate" id="btnV_1">V1</button>
+			<input class="V_calibrate"  id="txtV_1" type="text" name="txtV_1">
+			<br>
+			<button type="button" class="V_calibrate" id="btnV_2">V2</button>
+			<input class="V_calibrate"  id="txtV_2" type="text" name="txtV_2">
+			<br>
+		</form>
+		
+	</div>
+
+</body>
+</html>

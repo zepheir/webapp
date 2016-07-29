@@ -55,6 +55,12 @@ io.on('connection', function(socket){
     serialPort.write("{\"MODU\":\"DA0\",\"VALUE\":"+data+"}\r\n");
     console.log("{\"MODU\":\"DA0\",\"VALUE\":"+data+"}");
   });
+
+  socket.on('resCh0', function (data) {
+    serialPort.write("{\"MODU\":\"RES0\",\"VALUE\":"+data+"}\r\n");
+    console.log("{\"MODU\":\"RES0\",\"VALUE\":"+data+"}");
+  });
+
 });
 
 

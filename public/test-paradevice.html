@@ -1,0 +1,283 @@
+﻿<!--/*
+ * test.html 
+ * Version - 1.0.0
+ * Copyright (c) 2016 Marvin
+ */-->
+<!DOCTYPE html><!--注释：Ｗ３Ｃ规范-->
+<html>
+<head>
+	<!--声明当前页面的编码集CHARSET=GBK,ＧＢＫ(中文编码),UTF-8(国际编码)-->
+	<meta charset="utf-8">>
+	<!--当前页面的三要素-->
+	<title>汽车仪表测试台</title>
+	<meta name="Keywords" content="关键词，关键词">
+	<meta name="description" content="描述">
+
+	<script type="text/javascript" src="js/jquery-3.0.0.min.js"></script>  
+	<!-- <script type="text/javascript" src="js/test-buzhi.js"></script> -->
+ 	<script type="text/javascript" src="js/test-paradevice.js"></script>
+
+	<!-- css,js -->
+	<style type="text/css">
+		*{margin: 0;padding: 0;}
+		#form_screen{ width:1330px;height:530px; float: left;margin: 10px;display:block;}
+
+		.screen_div{border:1px solid black;}
+
+		#navgation_bar{width: 1318px;height: 78px;background: #D1D1D1;text-align: right; line-height:20px;}
+		#navgation_bar h2{ text-align:center;float: center;line-height:40px}
+
+		#screen_bar{width: 218px;height: 418px;background: #FFD39B;font-size: 16pt;float: left;color: blue;}
+		#screen_bar ul li{width: 218px;list-style-type: none;}
+		#screen_bar ul li a{width: 218px;color: blue;}
+
+		#para_of_system_bar {background:#BFBFBF;width: 1098px;height: 58px;float: left; text-align: right;line-height: 60px;}
+
+/*		#screen_para_bar {width: 158px;height: 358px;background: #FFD39B; font-size: 14pt;float: left;overflow-x:scroll;}
+		#screen_para_bar ul li{list-style-type: none;}
+		#screen_para_bar ul li a{width: 158px;}*/
+/*		#run_bar table {height: 138px;background: #fff;border-collapse: collapse;border: 1px solid black;}
+		#run_bar table  th{ height: 20px; border-collapse: collapse;border: 1px solid black;}
+		#run_bar table td{ height: 10px; border-collapse: collapse;border: 1px solid black;}*/
+
+		#para_data_bar {background: #B5B5B5;width: 1098px;height: 358px;;float: left;overflow-x:scroll;}
+		#para_of_device_bar label {height: 50px;}
+		#para_data_bar input {width: 100px;}
+		#para_data_bar button {width: 50px;}
+
+
+		#taskbar{background: #D1D1D1;width:1318px;height:28px;float: left;line-height:30px;}
+
+		#screen_bar ul li a:hover{background: #d96499;color: #ffffff;font-size: 20pt;}
+		#screen_para_bar ul li:hover{background: #d96499;color: #ffffff;font-size: 16pt;}
+
+
+
+
+		a:link {
+			text-decoration: none;
+		}
+		div>a{
+			display: inline-block;
+			text-align: center;
+			width: 120px;
+			padding: 8px;
+			background-color: #eee;
+			border: 2px solid black;
+			border-radius : 20px;
+		}
+		/* 定义一个关键帧 */
+		@-webkit-keyframes 'fisheye' {
+			/* 定义动画开始处的关键帧 */
+			0% {
+				-webkit-transform: scale(1);
+				background-color: #eee;
+				border-radius : 10px;
+			}
+			/* 定义动画进行40%时的关键帧 */
+			40% {
+				-webkit-transform: scale(1.5);
+				background-color: #bbb;
+				border-radius : 10px;
+			}
+			/* 定义动画进行100%时的关键帧 */
+			100% {
+				-webkit-transform: scale(1);
+				background-color: #eee;
+				border-radius : 10px;
+			}
+		}
+		div>a:hover {
+			/* 指定执行fkjava动画 */
+			-webkit-animation-name: 'fisheye';
+			/* 指定动画的执行时间 */
+			-webkit-animation-duration: 3s;
+			/* 指定动画的循环无限次 */
+			-webkit-animation-iteration-count: infinite;
+		}
+
+
+	</style>
+	<link rel="stylesheet" type="text/css" href="css/animate.css">
+    
+    <!-- 时间和日期显示 -->
+	
+
+</head>
+
+<body style="width:1320;height:530px;"  >
+    <div id="form_screen">
+	    <div  class="screen_div" id="navgation_bar" style="color:blue;">
+	    	<h2>汽车仪表综合测试台</h2>
+	    	<p id="time">
+	    	</p>
+	    	<p>
+	    		<b>设备型号：QCYB-C4202-A  上海工业自动化仪表研究院研制</b>
+	    	</p>  
+	    </div>
+
+	    <div class="screen_div" id="screen_bar">
+	     	<ul>
+	     		<li>
+	     			<a href="test-buzhi.html" >主画面</a>
+	     		</li>
+	     		<li>
+	     			<a href="test-paradevice.html" >参数设置</a>
+	     		</li>     	
+	     		<li>
+	     			<a onclick="test()";>帮助/关于我们</a>
+	     		</li>
+	     		<li>
+	     			<hr>
+	     		</li>
+	     		<li>
+	     			<a href="javascript:window.close()" >退出</a>
+	     		</li>
+	     	</ul>
+	    </div>
+
+	    <div class="screen_div" id="para_of_system_bar">
+	    	<p style="font-size:14pt;">
+	    	仪表型号：
+	    	<!-- <span id="device_name" style="background:#FFFFFF;width:500px;">XXXX</span> -->
+	    	<select id="device_name" name="device_name" style="margin-bottom:10px;">
+				<option value="XXXX">XXXX</option>
+<!-- 				<option value="19200">19200Kbps</option>
+				<option value="38400">38400Kbps</option> -->
+			</select> 
+	    	波特率：
+	    	<select id="baud" name="baud" style="margin-bottom:10px;">
+				<option value="5K">5Kbps</option><!-- 定时器０：0xBF定时器１：0xFF -->
+				<option value="10K">10Kbps</option><!-- 定时器０：0x31定时器１：0x1C -->
+				<option value="20k">20Kbps</option><!-- 定时器０：0x18定时器１：0x1C -->
+				<option value="40K">40Kbps</option><!-- 定时器０：0x87定时器１：0xFF -->
+				<option value="50K">50Kbps</option><!-- 定时器０：0x09定时器１：0x1C -->
+				<option value="80k">80Kbps</option><!-- 定时器０：0x83定时器１：0xFF -->
+				<option value="100K">100Kbps</option><!-- 定时器０：0x04定时器１：0x1C -->
+				<option value="125K">125Kbps</option><!-- 定时器０：0x03定时器１：0x1C -->
+				<option value="200k">200Kbps</option><!-- 定时器０：0x81定时器１：0xFA -->
+				<option value="250K">250Kbps</option><!-- 定时器０：0x01定时器１：0x1C -->
+				<option value="400K">400Kbps</option><!-- 定时器０：0x80定时器１：0xFA -->
+				<option value="500k">500Kbps</option><!-- 定时器０：0x00定时器１：0x1C -->
+				<option value="666K">666Kbps</option><!-- 定时器０：0x80定时器１：0xB6 -->
+				<option value="800K">800Kbps</option><!-- 定时器０：0x00定时器１：0x16 -->
+				<option value="1000k">1000Kbps</option><!-- 定时器０：0x00定时器１：0x14 -->
+			</select>
+	    	<!-- <span id="baud">19200Kbps</span> -->
+	    	帧类型： 
+	    	<select id="frame_type" name="frame_type" style="margin-bottom:10px;">
+				<option value="标准帧">标准帧</option>
+				<option value="扩展帧">扩展帧</option>
+			</select>
+			<!-- <span id="frame_type"> </span> -->
+			 帧格式：
+			<select id="frame_formate" name="frame_formate" style="margin-bottom:10px;">
+				<option value="数据帧">数据帧</option>
+				<option value="远程帧">远程帧</option>
+			</select>
+			<!-- <span id="frame_formate"></span> -->
+	    	</p>
+	    </div >
+
+	    	
+<!-- 	    <div class="screen_div" id="screen_para_bar" >
+	    	<ul>
+	     		<li>
+	     			电阻
+	     		</li>
+	     		<li>
+	     			频率
+	     		</li>     	
+	     		<li>
+	     			DI
+	     		</li>
+	     		<li>
+	     			CAN
+	     		</li>
+	     	</ul>
+	    </div> -->
+	    <div class="screen_div" id="para_data_bar" >
+	    	<label style="margin:10px;">信号类型：</label>
+	    	<select id="signal_type" name="sigal_type" style="margin:10px;">
+				<option value="R01">R01</option>
+				<option value="R02">R02</option>
+				<option value="V01">V01</option>
+				<option value="V02">V02</option>
+				<option value="F01">F01</option>
+				<option value="F02">F02</option>
+				<option value="F03">F03</option>
+				<option value="F04">F04</option>
+				<option value="F05">F05</option>
+				<option value="CAN">CAN</option>
+			</select>
+			<label id="sig_val" style="margin:10px;">信号值：</label>
+			<input class="signal"  id="signal_value" type="text" name="signal_value">
+			<label style="margin:10px;">信号名称：</label>
+			<input class="signal"  id="signal_name" type="text" name="signal_name">
+			<button type="button" class="signal" id="add_signal">添加</button><br>
+			<button type="button" class="signal" id="write_signal" style="margin:10px;">写入</button><br>
+
+			<!-- <ul id="signal_list">
+	     		<li>
+	     		<label style="margin:10px;">信号类型：</label>
+	    		<select id="signal_type" name="sigal_type" style="margin:10px;">
+				<option value="R01">R01</option>
+				<option value="R02">R02</option>
+				<option value="V01">V01</option>
+				<option value="V02">V02</option>
+				<option value="F01">F01</option>
+				<option value="F02">F02</option>
+				<option value="F03">F03</option>
+				<option value="F04">F04</option>
+				<option value="F05">F05</option>
+				<option value="CAN">CAN</option>
+			</select>
+			<label style="margin:10px;">信号值：</label>
+			<input class="signal"  id="signal_value" type="text" name="signal_value">
+			<label style="margin:10px;">信号名称：</label>
+			<input class="signal"  id="signal_name" type="text" name="signal_name">
+	     		</li>
+	     		<li>
+	     			<hr>
+	     		</li>
+	     		
+	     	</ul> -->
+	    </div>
+
+	    <div class="screen_div" id="taskbar">
+	    	<span id="device_info">通讯正常，设备运行正常！
+	    	</span>
+	    </div>
+    </div>  
+  <!--  <script type="text/javascript" src="js/jquery-3.0.0.min.js"></script>  
+ 	<script type="text/javascript">
+ 	// 	var canvas = document.getElementById("mc");
+ 	// 	var ctx = canvas.getContext('2d');
+ 	// 	ctx.fillStyle='BLUE';
+ 	// 	ctx.fillRect(100,40,80,100)
+
+ 	// 	//时钟
+		// document.getElementById('time').innerHTML=new Date().toLocaleString();     
+		// setInterval("document.getElementById('time').innerHTML=new Date().toLocaleString();",1000);  
+
+		$(document).ready(function(){
+ 			//alert("欢迎！")
+ 			
+ 			
+ 
+ 		});
+ 		// 	$(".screen_para_bar").hover(function(){
+ 		// 			$(this).addClass("animated swing");
+ 		// 			$(this).find(".desc").show().removeClass("fadeOut").addClass("animated fadeIn");
+ 		// 		},function(){
+ 		// 			$(this).removeClass("animated swing");
+ 		// 			$(this).find(".desc").hide().removeClass("fadeIn").addClass("animated fadeOut");
+ 		// });
+	</script>     -->
+ 	<!-- <script type="text/javascript" src="js/jquery-3.0.0.min.js"></script> -->
+ 	<!-- <script type="text/javascript"> -->
+ 	<!-- </script> -->
+ -->
+
+</body>
+</html>
