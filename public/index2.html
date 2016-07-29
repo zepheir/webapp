@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Test Ardrino & PC</title>
+
+    <link rel="stylesheet" href="css/jquery-ui.css" />
+
+    <style>
+    body {
+      margin: 0px;
+      padding: 0px;
+    }
+    </style>
+
+    <script src="js/jquery-1.12.4.js"></script>
+    <!--<script src="js/jquery.min.js"></script>-->
+    <script src="js/jquery-ui.js"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <!--<script src="js/server.js"></script>-->
+
+  </head>
+
+  <body>
+    <div>
+      <!-- Slider -->
+      <h2 id="sliderVoltageTxt1">Voltage:0</h2>
+      <div id="sliderVoltage1"></div>
+    </div>
+
+  
+    <script>
+      var socket = io.connect('http://localhost:3000');
+
+      $( "#sliderVoltage1" ).slider({
+        min:0,
+        max:4000,
+        change:function(event, ui){
+          socket.emit('sliderVoltage1', ui.value);
+          $("#sliderVoltageTxt1").text("Voltage1:"+ ui.value/100);
+        }
+      });
+    </script>
+
+    <!--<script src="/socket.io/socket.io.js"></script>-->
+    <!--<script src="js/server.js"></script>-->
+
+
+  </body>
+
+</html>

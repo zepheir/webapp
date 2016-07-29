@@ -1,0 +1,156 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('expressframe:server');
+var http = require('http');
+var SerialPort = require("serialport");
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+// setup socket.io
+var io = require('socket.io')(server);
+
+// 
+var serialPort;
+var portName = 'COM4'; //change this to your Arduino port
+var sendData = "";
+
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+// Setup serial port
+serialListener(debug);
+
+
+// Listen on socket.io Events
+io.on('connection', function(socket){
+  console.log('io connection.');
+
+  io.on('update', function (data) {
+    
+  });
+
+  socket.on('sliderVoltage1', function (data) {
+    serialPort.write("{\"MODU\":\"DA0\",\"VALUE\":"+data+"}\r\n");
+    console.log("{\"MODU\":\"DA0\",\"VALUE\":"+data+"}");
+  });
+});
+
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
+
+
+// Listen to serial port
+function serialListener(debug)
+{
+    var receivedData = "";
+    serialPort = new SerialPort(portName, {
+      baudrate: 9600,
+      // defaults for Arduino serial communication
+      dataBits: 8,
+      parity: 'none',
+      stopBits: 1,
+      flowControl: false
+    });
+ 
+    serialPort.on("open", function () {
+      console.log('open serial communication');
+      // Listens to incoming data
+      serialPort.on('data', function(data) {
+        receivedData += data.toString();
+        console.log("----------------");
+        console.log("received data:");
+        console.log(receivedData);
+        
+        
+        // send the incoming data to browser with websockets.
+        if (receivedData.indexOf('RES')>=0) {
+          sendData = receivedData;
+          io.emit('update', sendData);
+        }
+
+        // Clear receivedData Buffer
+        receivedData = '';
+        
+      });  
+    });  
+}
