@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('expressframe:server');
 var http = require('http');
 var SerialPort = require("serialport");
+var fs = require('fs');
 
 /**
  * Get port from environment and store in Express.
@@ -24,11 +25,33 @@ var server = http.createServer(app);
 
 // setup socket.io
 var io = require('socket.io')(server);
+// var io = require('socket.io');
 
-// 
+//
+var socketServer;
 var serialPort;
-var portName = 'COM4'; //change this to your Arduino port
+var portName = '';
+// var portName = 'COM4'; //change this to your Arduino port
+// var portName = '/dev/tty.usbmodem1421';
 var sendData = "";
+
+
+// Read config.json <- the configure datas
+fs.readFile('./config.json', function (err, data) {
+  if (err) {
+    throw err;
+  }
+
+  var configObj = JSON.parse(data);
+  // console.log('portName:', configObj['portName']);
+  portName = configObj['portName'];
+
+  // Setup serial port
+  serialListener(debug);
+
+});
+
+
 
 
 /**
@@ -39,21 +62,22 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-// Setup serial port
-serialListener(debug);
-
+// // Setup serial port
+// serialListener(debug);
+socketServer = io.listen(server);
 
 // Listen on socket.io Events
 io.on('connection', function(socket){
   console.log('io connection.');
 
-  io.on('update', function (data) {
-    
-  });
-
-  socket.on('sliderVoltage1', function (data) {
+  socket.on('voltage1', function (data) {
     serialPort.write("{\"MODU\":\"DA0\",\"VALUE\":"+data+"}\r\n");
     console.log("{\"MODU\":\"DA0\",\"VALUE\":"+data+"}");
+  });
+
+  socket.on('voltage2', function (data) {
+    serialPort.write("{\"MODU\":\"DA1\",\"VALUE\":"+data+"}\r\n");
+    console.log("{\"MODU\":\"DA1\",\"VALUE\":"+data+"}");
   });
 
   socket.on('resCh0', function (data) {
@@ -61,6 +85,26 @@ io.on('connection', function(socket){
     console.log("{\"MODU\":\"RES0\",\"VALUE\":"+data+"}");
   });
 
+  socket.on('resCh1', function (data) {
+    serialPort.write("{\"MODU\":\"RES1\",\"VALUE\":"+data+"}\r\n");
+    console.log("{\"MODU\":\"RES1\",\"VALUE\":"+data+"}");
+  });
+
+  socket.on('conOut', function (data) {
+    serialPort.write("{\"MODU\":\"DO\",\"VALUE\":"+data+"}\r\n");
+    console.log("{\"MODU\":\"DO\",\"VALUE\":"+data+"}");
+  });
+
+  socket.on('freqOut', function (data, channal) {
+    SerialPort.write("{\"MODU\":\"FREQ\",\"VALUE\":"+data+",\"CHANNAL\":"+channal+"}\r\n");
+    console.log("{\"MODU\":\"DO\",\"VALUE\":"+data+",\"CHANNAL\":"+channal+"}\r\n");
+  });
+
+});
+
+
+socketServer.on('alarmInput', function (data) {
+  console.log('>> alarm Input:');
 });
 
 
@@ -135,7 +179,16 @@ function serialListener(debug)
       dataBits: 8,
       parity: 'none',
       stopBits: 1,
-      flowControl: false
+      flowControl: false,
+      // Turn off the autoOpen
+      autoOpen:false
+
+    });
+
+    serialPort.open(function (err) {
+      if (err) {
+        return console.log('Error opening port: ', err.message);
+      }
     });
  
     serialPort.on("open", function () {
@@ -149,14 +202,19 @@ function serialListener(debug)
         
         
         // send the incoming data to browser with websockets.
-        if (receivedData.indexOf('RES')>=0) {
+        if (receivedData.indexOf('ALM')>=0) {
           sendData = receivedData;
-          io.emit('update', sendData);
+          console.log('alarmInput');
+          socketServer.emit('alarmInput', sendData);
         }
 
         // Clear receivedData Buffer
         receivedData = '';
         
       });  
-    });  
+    });
+
+    serialPort.on('error', function (err) {
+      console.log('Serial Error:', err.message);
+    }); 
 }
