@@ -7,7 +7,7 @@
 
     <style>
     body {
-      margin: 0px;
+      margin: 50px;
       padding: 0px;
     }
     </style>
@@ -26,6 +26,9 @@
       <!-- Slider -->
       <h2 id="sliderVoltageTxt1">Voltage:0</h2>
       <div id="sliderVoltage1"></div>
+      <!-- button -->
+      <h2 class="demoHeaders">Button</h2>
+      <button id="button" class="ui-button ui-corner-all ui-widget">Disabled</button>
     </div>
 
   
@@ -37,10 +40,29 @@
         max:4000,
         step:50,
         change:function(event, ui){
-          socket.emit('sliderVoltage1', ui.value);
+          socket.emit('resCh0', ui.value);
           $("#sliderVoltageTxt1").text("Voltage1:"+ ui.value/100);
         }
       });
+
+      socket.on('alarmInput', function(data){
+        console.log(data);        
+        if(data == 1){
+          $("#button").button({
+            "disabled":false,
+            "label":"Enabled"
+          });
+        }else{
+          $("#button").button({
+            "disabled":true,
+            "label":"Disabled"
+          });
+        }
+        
+      });
+
+
+      
     </script>
 
     <!--<script src="/socket.io/socket.io.js"></script>-->

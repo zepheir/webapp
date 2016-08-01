@@ -593,7 +593,7 @@ function outputR(send_type,send_data)
 
 	var socket = io.connect('http://localhost:3000');
 
-	socket.emit('resCh0', 10);
+	socket.emit('resCh0', send_data);
 
 	return {send_type:send_type,send_data:hex_strTem};
 }
