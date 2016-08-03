@@ -79,16 +79,51 @@ function initSocketIO(httpServer, debug) {
   socketServer.on('connection', function (socket) {
     console.log('socketServer connected!');
 
-    socket.on('resCh0', function (data) {
+    socket.on('eventVoltage1', function (data) {
+      serialPort.write("{\"MODU\":\"DA0\",\"VALUE\":"+data+"}\r\n");
+      console.log("{\"MODU\":\"DA0\",\"VALUE\":"+data+"}");
+    });
+
+    socket.on('eventVoltage2', function (data) {
+      serialPort.write("{\"MODU\":\"DA1\",\"VALUE\":"+data+"}\r\n");
+      console.log("{\"MODU\":\"DA1\",\"VALUE\":"+data+"}");
+    });
+
+    socket.on('eventResCh0', function (data) {
       serialPort.write("{\"MODU\":\"RES0\",\"VALUE\":"+data+"}\r\n");
       console.log("{\"MODU\":\"RES0\",\"VALUE\":"+data+"}");
     });
 
+    socket.on('eventResCh1', function (data) {
+      serialPort.write("{\"MODU\":\"RES1\",\"VALUE\":"+data+"}\r\n");
+      console.log("{\"MODU\":\"RES1\",\"VALUE\":"+data+"}");
+    });
+
+    socket.on('eventConOut', function (data) {
+      serialPort.write("{\"MODU\":\"DO\",\"VALUE\":"+data+"}\r\n");
+      console.log("{\"MODU\":\"DO\",\"VALUE\":"+data+"}");
+    });
+
+    socket.on('eventFreqOut', function (data, channal) {
+      SerialPort.write("{\"MODU\":\"FREQ\",\"VALUE\":"+data+",\"CHANNAL\":"+channal+"}\r\n");
+      console.log("{\"MODU\":\"DO\",\"VALUE\":"+data+",\"CHANNAL\":"+channal+"}\r\n");
+    });
+
+    socket.on('eventSpeed', function (data) {
+      serialPort.write("{\"MODU\":\"ENGSP\",\"VALUE\":"+data+"}\r\n");
+      console.log("{\"MODU\":\"ENGSP\",\"VALUE\":"+data+"}");
+    });
+
+    socket.on('eventTemp', function (data) {
+      serialPort.write("{\"MODU\":\"WATTP\",\"VALUE\":"+data+"}\r\n");
+      console.log("{\"MODU\":\"WATTP\",\"VALUE\":"+data+"}");
+    });
+
   });
 
-  socketServer.on('alarmInput', function (data) {
-      console.log('alarm input in socketServer!');
-  });
+  // socketServer.on('alarmInput', function (data) {
+  //     console.log('alarm input in socketServer!');
+  // });
 
 
 }
