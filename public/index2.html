@@ -7,7 +7,7 @@
 
     <style>
     body {
-      margin: 0px;
+      margin: 50px;
       padding: 0px;
     }
     </style>
@@ -26,6 +26,17 @@
       <!-- Slider -->
       <h2 id="sliderVoltageTxt1">Voltage:0</h2>
       <div id="sliderVoltage1"></div>
+      <!-- button -->
+      <h2 class="demoHeaders">Button</h2>
+      <button id="button" class="ui-button ui-corner-all ui-widget">Disabled</button>
+      <!-- Slider -->
+      <h2 id="sliderSpeedTxt">Speed:0</h2>
+      <div id="sliderSpeed"></div>
+      <!-- Slider -->
+      <h2 id="sliderTempTxt">Temp:40</h2>
+      <div id="sliderTemp"></div>
+
+
     </div>
 
   
@@ -37,10 +48,52 @@
         max:4000,
         step:50,
         change:function(event, ui){
-          socket.emit('sliderVoltage1', ui.value);
+          socket.emit('eventVoltage1', ui.value);
           $("#sliderVoltageTxt1").text("Voltage1:"+ ui.value/100);
         }
       });
+
+
+      socket.on('eventAlarmInput', function(data){
+        console.log(data);        
+        if(data == 1){
+          $("#button").button({
+            "disabled":false,
+            "label":"Enabled"
+          });
+        }else{
+          $("#button").button({
+            "disabled":true,
+            "label":"Disabled"
+          });
+        }
+        
+      });
+
+
+      $( "#sliderSpeed" ).slider({
+        min:0,
+        max:90,
+        step:3,
+        change:function(event, ui){
+          socket.emit('eventSpeed', ui.value);
+          $("#sliderSpeedTxt").text("Speed:"+ ui.value*100/3);
+        }
+      });
+
+
+      $( "#sliderTemp" ).slider({
+        min:40,
+        max:100,
+        step:1,
+        change:function(event, ui){
+          socket.emit('eventTemp', ui.value);
+          $("#sliderTempTxt").text("Temp:"+ ui.value);
+        }
+      });
+
+
+      
     </script>
 
     <!--<script src="/socket.io/socket.io.js"></script>-->

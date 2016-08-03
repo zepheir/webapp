@@ -6,7 +6,7 @@ SerialPort = require("serialport").SerialPort
 
 var socketServer;
 var serialPort;
-var portName = 'COM3'; //change this to your Arduino port
+var portName = '/dev/tty.usbmodem1421'; //change this to your Arduino port
 var sendData = "";
 
 // handle contains locations to browse to (vote and poll); pathnames.
@@ -33,23 +33,29 @@ function startServer(route,handle,debug)
 function initSocketIO(httpServer,debug)
 {
 	socketServer = socketio.listen(httpServer);
-	if(debug == false){
-		socketServer.set('log level', 1); // socket IO debug off
-	}
-	socketServer.on('connection', function (socket) {
-	console.log("user connected");
-	socket.emit('onconnection', {pollOneValue:sendData});
-	socketServer.on('update', function(data) {
-	socket.emit('updateData',{pollOneValue:data});
-	});
-	socket.on('buttonval', function(data) {
-		serialPort.write(data + 'E');
-	});
-	socket.on('sliderval', function(data) {
-		serialPort.write(data + 'P');
-	});
+		if(debug == false){
+			socketServer.set('log level', 1); // socket IO debug off
+		}
+
+		socketServer.on('connection', function (socket) {
+			
+			console.log("user connected");
+		
+			socket.emit('onconnection', {pollOneValue:sendData});
+		
+			socketServer.on('update', function(data) {
+				socket.emit('updateData',{pollOneValue:data});
+			});
+
+			socket.on('buttonval', function(data) {
+				serialPort.write(data + 'E');
+			});
+
+			socket.on('sliderval', function(data) {
+				serialPort.write(data + 'P');
+			});
 	
-    });
+  	});
 }
 
 // Listen to serial port
